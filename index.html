@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#111827">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="/manifest.json">
+    <title>Ruang Belajar</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div id="app">
+
+    <header class="topbar">
+        <button class="brand" onclick="showScreen('home')">
+            <span class="brand-icon">RB</span>
+            <span>
+                <strong>Ruang Belajar</strong>
+                <small>Belajar lebih mudah</small>
+            </span>
+        </button>
+
+        <div class="top-actions">
+            <div class="level-pill">
+                <span>Level</span>
+                <strong id="levelText">1</strong>
+            </div>
+            <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" aria-label="Ganti tema">☾</button>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- HOME -->
+        <section id="home" class="screen active">
+            <div class="hero-card">
+                <div>
+                    <span class="eyebrow">RUANG BELAJAR</span>
+                    <h1>Belajar tanpa bikin pusing.</h1>
+                    <p>Masukkan materi, pahami penjelasannya, lalu perkuat ingatanmu lewat game dan ujian.</p>
+                    <button class="primary-btn" onclick="showScreen('materi')">Mulai Belajar</button>
+                </div>
+                <div class="hero-art">
+                    <div class="book-shape">RB</div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span>EXP</span>
+                    <strong id="homeExp">0</strong>
+                    <small>pengalaman belajar</small>
+                </div>
+                <div class="stat-card">
+                    <span>STREAK</span>
+                    <strong id="homeStreak">0 hari</strong>
+                    <small>konsistensi belajar</small>
+                </div>
+                <div class="stat-card">
+                    <span>UJIAN</span>
+                    <strong id="homeExam">0</strong>
+                    <small>ujian selesai</small>
+                </div>
+            </div>
+
+            <div class="section-title">
+                <div>
+                    <span class="eyebrow">MENU</span>
+                    <h2>Mau belajar apa?</h2>
+                </div>
+            </div>
+
+            <div class="menu-grid">
+                <button class="menu-card" onclick="showScreen('materi')">
+                    <span class="menu-icon">📚</span>
+                    <strong>Materi</strong>
+                    <small>Pahami pelajaran dengan penjelasan sederhana.</small>
+                </button>
+                <button class="menu-card" onclick="openActivities()">
+                    <span class="menu-icon">🎮</span>
+                    <strong>Main & Belajar</strong>
+                    <small>Perkuat ingatan lewat game edukasi.</small>
+                </button>
+                <button class="menu-card" onclick="openExam()">
+                    <span class="menu-icon">📝</span>
+                    <strong>Ujian</strong>
+                    <small>Uji pemahaman dan lihat hasilmu.</small>
+                </button>
+                <button class="menu-card" onclick="showScreen('progress'); updateUI()">
+                    <span class="menu-icon">📊</span>
+                    <strong>Progress Saya</strong>
+                    <small>Lihat level, EXP, streak, dan pencapaian.</small>
+                </button>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon">💡</div>
+                <div>
+                    <strong>Kenapa belajar di sini?</strong>
+                    <p>Setiap aktivitas punya tujuan: memahami, mengingat, berlatih, lalu mengetahui bagian yang masih perlu dipelajari.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MATERIAL -->
+        <section id="materi" class="screen">
+            <button class="back-btn" onclick="showScreen('home')">← Menu utama</button>
+            <div class="page-heading">
+                <span class="eyebrow">LANGKAH 1</span>
+                <h1>Masukkan materi</h1>
+                <p>Tulis kisi-kisi, catatan, atau materi yang ingin kamu pelajari.</p>
+            </div>
+
+            <div class="panel">
+                <label for="materialInput">Materi belajar</label>
+                <textarea id="materialInput" rows="12" placeholder="Contoh:
+Fotosintesis adalah proses tumbuhan membuat makanan menggunakan cahaya matahari.
+
+Tulis materi sebanyak yang kamu punya."></textarea>
+
+                <div class="form-row">
+                    <span id="materialCount">0 karakter</span>
+                    <button class="primary-btn" onclick="startLearning()">Jelaskan Materi</button>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <strong>Tips</strong>
+                <p>Materi yang lebih lengkap biasanya menghasilkan penjelasan dan soal yang lebih sesuai.</p>
+            </div>
+        </section>
+
+        <!-- EXPLANATION -->
+        <section id="explanation" class="screen">
+            <button class="back-btn" onclick="showScreen('materi')">← Kembali ke materi</button>
+            <div class="page-heading">
+                <span class="eyebrow">LANGKAH 2</span>
+                <h1>Pahami materinya</h1>
+                <p>Baca pelan-pelan. Kalau masih bingung, langsung tanyakan bagian yang belum jelas.</p>
+            </div>
+
+            <div class="panel explanation-panel">
+                <div id="explanationText" class="rich-text">Memuat penjelasan...</div>
+            </div>
+
+            <div class="panel">
+                <label for="questionInput">Masih bingung?</label>
+                <textarea id="questionInput" rows="4" placeholder="Contoh: Apa fungsi klorofil?"></textarea>
+                <button class="secondary-btn" onclick="askQuestion()">Tanyakan</button>
+                <div id="answerBox" class="answer-box hidden"></div>
+            </div>
+
+            <div class="next-card">
+                <div>
+                    <span class="eyebrow">SUDAH PAHAM?</span>
+                    <h2>Saatnya memperkuat ingatan</h2>
+                    <p>Pilih game atau langsung coba ujian.</p>
+                </div>
+                <div class="button-row">
+                    <button class="primary-btn" onclick="openActivities()">Main & Belajar</button>
+                    <button class="outline-btn" onclick="openExam()">Mulai Ujian</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACTIVITIES -->
+        <section id="activities" class="screen">
+            <button class="back-btn" onclick="showScreen('home')">← Menu utama</button>
+            <div class="page-heading">
+                <span class="eyebrow">LANGKAH 3</span>
+                <h1>Belajar sambil bermain</h1>
+                <p>Pilih aktivitas. Semua game menggunakan materi yang sedang kamu pelajari.</p>
+            </div>
+
+            <div class="activity-grid">
+                <button class="activity-card" onclick="startGame('memory')">
+                    <div class="activity-icon">🧠</div>
+                    <h2>Memory</h2>
+                    <p>Cari pasangan konsep untuk melatih daya ingat.</p>
+                    <span>6 pasangan • +EXP</span>
+                </button>
+                <button class="activity-card" onclick="startGame('puzzle')">
+                    <div class="activity-icon">🧩</div>
+                    <h2>Puzzle</h2>
+                    <p>Susun kata menjadi kalimat penting dari materi.</p>
+                    <span>3 puzzle • +EXP</span>
+                </button>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon">📱</div>
+                <div>
+                    <strong>Bisa dipakai di HP</strong>
+                    <p>Tampilan otomatis menyesuaikan layar HP. Tombol dibuat besar agar nyaman disentuh.</p>
+                </div>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon">🎯</div>
+                <div>
+                    <strong>Tujuan game</strong>
+                    <p>Game bukan sekadar hiburan. Setiap permainan dirancang untuk membantu mengingat konsep yang baru dipelajari.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- GAME -->
+        <section id="game" class="screen">
+            <button class="back-btn" onclick="openActivities()">← Pilih aktivitas</button>
+            <div class="page-heading compact">
+                <span class="eyebrow" id="gameEyebrow">GAME</span>
+                <h1 id="gameTitle">Game</h1>
+                <p id="gameDescription"></p>
+            </div>
+            <div id="gameArea"></div>
+        </section>
+
+        <!-- EXAM -->
+        <section id="exam" class="screen">
+            <button class="back-btn" onclick="showScreen('home')">← Menu utama</button>
+            <div class="page-heading">
+                <span class="eyebrow">LATIHAN UJIAN</span>
+                <h1 id="examTitle">Ujian</h1>
+                <p>Jawab berdasarkan materi yang sudah kamu pelajari.</p>
+            </div>
+            <div id="examArea"></div>
+        </section>
+
+        <!-- PROGRESS -->
+        <section id="progress" class="screen">
+            <button class="back-btn" onclick="showScreen('home')">← Menu utama</button>
+            <div class="page-heading">
+                <span class="eyebrow">PERKEMBANGAN</span>
+                <h1>Progress Saya</h1>
+                <p>Lihat perjalanan belajarmu sejauh ini.</p>
+            </div>
+
+            <div class="progress-hero">
+                <div class="level-circle"><span id="progressLevel">1</span></div>
+                <div>
+                    <span class="eyebrow">LEVEL SAAT INI</span>
+                    <h2 id="progressLevelName">Pelajar Baru</h2>
+                    <p id="progressExpText">0 / 100 EXP</p>
+                    <div class="progress-track"><div id="progressBar" class="progress-fill"></div></div>
+                </div>
+            </div>
+
+            <div class="stats-grid four">
+                <div class="stat-card"><span>EXP</span><strong id="progressExp">0</strong><small>Total pengalaman</small></div>
+                <div class="stat-card"><span>STREAK</span><strong id="progressStreak">0</strong><small>Hari berturut-turut</small></div>
+                <div class="stat-card"><span>UJIAN</span><strong id="progressExam">0</strong><small>Ujian selesai</small></div>
+                <div class="stat-card"><span>GAME</span><strong id="progressGames">0</strong><small>Game selesai</small></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="eyebrow">PENCAPAIAN</span>
+                        <h2>Yang sudah kamu dapat</h2>
+                    </div>
+                </div>
+                <div id="badges" class="badge-grid"></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="eyebrow">REKOMENDASI</span>
+                        <h2>Yang sebaiknya dilakukan</h2>
+                    </div>
+                </div>
+                <div id="recommendation" class="recommendation"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <nav class="bottom-nav">
+        <button onclick="showScreen('home')" data-nav="home"><span>⌂</span><small>Beranda</small></button>
+        <button onclick="showScreen('materi')" data-nav="materi"><span>▤</span><small>Materi</small></button>
+        <button onclick="openActivities()" data-nav="activities"><span>◇</span><small>Game</small></button>
+        <button onclick="openExam()" data-nav="exam"><span>✓</span><small>Ujian</small></button>
+        <button onclick="showScreen('progress'); updateUI()" data-nav="progress"><span>◉</span><small>Progress</small></button>
+    </nav>
+
+    <div id="toast" class="toast"></div>
+</div>
+
+<script>
+const state = {
+    material: localStorage.getItem("rb_material") || "",
+    explanation: localStorage.getItem("rb_explanation") || "",
+    gameData: null,
+    examData: null,
+    currentGame: null,
+    memory: { cards: [], open: [], matched: 0 },
+    puzzle: { words: [], selected: [], target: "" }
+};
+
+const STORAGE = {
+    exp: "rb_exp",
+    streak: "rb_streak",
+    lastStudy: "rb_last_study",
+    exams: "rb_exams",
+    games: "rb_games",
+    scores: "rb_scores",
+    theme: "rb_theme"
+};
+
+function getNumber(key) {
+    return Number(localStorage.getItem(key) || 0);
+}
+
+function setNumber(key, value) {
+    localStorage.setItem(key, String(value));
+}
+
+function resetContentForNewMaterial(material) {
+    state.material = material;
+    state.explanation = "";
+    state.gameData = null;
+    state.examData = null;
+    state.currentGame = null;
+
+    localStorage.setItem("rb_material", material);
+    localStorage.removeItem("rb_explanation");
+    localStorage.removeItem("rb_game_data");
+    localStorage.removeItem("rb_game_material");
+    localStorage.removeItem("rb_exam_data");
+    localStorage.removeItem("rb_exam_material");
+}
+
+function addExp(amount) {
+    setNumber(STORAGE.exp, getNumber(STORAGE.exp) + amount);
+    updateUI();
+}
+
+function updateStreak() {
+    const today = new Date().toISOString().slice(0, 10);
+    const last = localStorage.getItem(STORAGE.lastStudy);
+    let streak = getNumber(STORAGE.streak);
+
+    if (last === today) return;
+
+    if (last) {
+        const previous = new Date(last + "T00:00:00");
+        const current = new Date(today + "T00:00:00");
+        const diff = Math.round((current - previous) / 86400000);
+        streak = diff === 1 ? streak + 1 : 1;
+    } else {
+        streak = 1;
+    }
+
+    localStorage.setItem(STORAGE.lastStudy, today);
+    setNumber(STORAGE.streak, streak);
+}
+
+function levelInfo(exp) {
+    const level = Math.floor(exp / 100) + 1;
+    const current = exp % 100;
+    let name = "Pelajar Baru";
+    if (level >= 3) name = "Pelajar Aktif";
+    if (level >= 5) name = "Pembelajar Tekun";
+    if (level >= 8) name = "Pencari Ilmu";
+    if (level >= 12) name = "Master Belajar";
+    return { level, current, name };
+}
+
+function updateUI() {
+    const exp = getNumber(STORAGE.exp);
+    const info = levelInfo(exp);
+
+    document.getElementById("levelText").textContent = info.level;
+    document.getElementById("homeExp").textContent = exp;
+    document.getElementById("homeStreak").textContent = getNumber(STORAGE.streak) + " hari";
+    document.getElementById("homeExam").textContent = getNumber(STORAGE.exams);
+
+    document.getElementById("progressLevel").textContent = info.level;
+    document.getElementById("progressLevelName").textContent = info.name;
+    document.getElementById("progressExp").textContent = exp;
+    document.getElementById("progressStreak").textContent = getNumber(STORAGE.streak);
+    document.getElementById("progressExam").textContent = getNumber(STORAGE.exams);
+    document.getElementById("progressGames").textContent = getNumber(STORAGE.games);
+
+    document.getElementById("progressExpText").textContent = `${info.current} / 100 EXP`;
+    document.getElementById("progressBar").style.width = `${info.current}%`;
+
+    renderBadges();
+    renderRecommendation();
+}
+
+function renderBadges() {
+    const exp = getNumber(STORAGE.exp);
+    const streak = getNumber(STORAGE.streak);
+    const exams = getNumber(STORAGE.exams);
+    const games = getNumber(STORAGE.games);
+
+    const badges = [
+        ["🌱", "Langkah Pertama", "Mendapatkan 10 EXP", exp >= 10],
+        ["📚", "Rajin Belajar", "Menyelesaikan satu sesi belajar", !!state.material],
+        ["🔥", "Konsisten", "Memiliki streak 3 hari", streak >= 3],
+        ["🧠", "Pemaham", "Mendapatkan 100 EXP", exp >= 100],
+        ["🎮", "Pemain Cerdas", "Menyelesaikan 3 game", games >= 3],
+        ["🏆", "Berani Ujian", "Menyelesaikan ujian", exams >= 1]
+    ];
+
+    document.getElementById("badges").innerHTML = badges.map(b => `
+        <div class="badge ${b[3] ? "earned" : ""}">
+            <div class="badge-icon">${b[0]}</div>
+            <div><strong>${b[1]}</strong><small>${b[2]}</small></div>
+        </div>
+    `).join("");
+}
+
+function renderRecommendation() {
+    const exp = getNumber(STORAGE.exp);
+    const games = getNumber(STORAGE.games);
+    const exams = getNumber(STORAGE.exams);
+
+    let title = "Mulai dari materi";
+    let text = "Masukkan materi yang ingin kamu pelajari agar kita bisa mulai.";
+
+    if (state.material && !state.explanation) {
+        title = "Baca penjelasan";
+        text = "Materimu sudah tersimpan. Lanjutkan ke penjelasan agar konsepnya lebih mudah dipahami.";
+    } else if (state.explanation && games === 0) {
+        title = "Coba satu game";
+        text = "Setelah memahami materi, mainkan satu game untuk memperkuat ingatan.";
+    } else if (games > 0 && exams === 0) {
+        title = "Uji pemahaman";
+        text = "Kamu sudah berlatih. Sekarang coba ujian untuk mengetahui bagian yang masih perlu diperbaiki.";
+    } else if (exp >= 100) {
+        title = "Pertahankan konsistensi";
+        text = "Kamu sudah berkembang. Pelajari materi baru dan jaga streak belajarmu.";
+    }
+
+    document.getElementById("recommendation").innerHTML = `
+        <div class="recommendation-icon">🎯</div>
+        <div><strong>${title}</strong><p>${text}</p></div>
+    `;
+}
+
+function showScreen(id) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    const target = document.getElementById(id);
+    if (target) target.classList.add("active");
+
+    document.querySelectorAll(".bottom-nav button").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.nav === id);
+    });
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    updateUI();
+}
+
+function toast(message) {
+    const el = document.getElementById("toast");
+    el.textContent = message;
+    el.classList.add("show");
+    clearTimeout(window.toastTimer);
+    window.toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function formatExplanation(text) {
+    return escapeHtml(text)
+        .split(/\n{2,}/)
+        .map(p => `<p>${p.replace(/\n/g, "<br>")}</p>`)
+        .join("");
+}
+
+async function api(url, body) {
+    const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.detail || "Terjadi kesalahan.");
+    }
+
+    return data;
+}
+
+async function startLearning() {
+    const input = document.getElementById("materialInput");
+    const material = input.value.trim();
+
+    if (!material) {
+        toast("Masukkan materi terlebih dahulu.");
+        input.focus();
+        return;
+    }
+
+    const button = input.parentElement.querySelector(".primary-btn");
+    button.disabled = true;
+    button.textContent = "Sedang menjelaskan...";
+
+    try {
+        const data = await api("/api/rangkuman", { materi: material });
+
+        const oldMaterial = state.material.trim();
+        const materialChanged = oldMaterial !== material;
+        if (materialChanged) {
+            resetContentForNewMaterial(material);
+        } else {
+            state.material = material;
+            localStorage.setItem("rb_material", material);
+        }
+
+        state.explanation = data.hasil;
+        localStorage.setItem("rb_explanation", data.hasil);
+
+        updateStreak();
+
+        document.getElementById("explanationText").innerHTML = formatExplanation(data.hasil);
+        document.getElementById("answerBox").classList.add("hidden");
+        showScreen("explanation");
+        addExp(10);
+        toast(materialChanged ? "Materi baru tersimpan. Game dan ujian dibuat ulang dari materi ini." : "+10 EXP karena menyelesaikan sesi belajar.");
+    } catch (error) {
+        toast(error.message);
+    } finally {
+        button.disabled = false;
+        button.textContent = "Jelaskan Materi";
+    }
+}
+
+async function askQuestion() {
+    if (!state.material) {
+        toast("Masukkan materi terlebih dahulu.");
+        return;
+    }
+
+    const input = document.getElementById("questionInput");
+    const question = input.value.trim();
+
+    if (!question) {
+        toast("Tulis pertanyaan terlebih dahulu.");
+        return;
+    }
+
+    const button = input.parentElement.querySelector(".secondary-btn");
+    button.disabled = true;
+    button.textContent = "Mencari jawaban...";
+
+    try {
+        const data = await api("/api/tanya", {
+            materi: state.material,
+            pertanyaan: question
+        });
+
+        const box = document.getElementById("answerBox");
+        box.innerHTML = `<strong>Jawaban</strong>${formatExplanation(data.hasil)}`;
+        box.classList.remove("hidden");
+        addExp(2);
+    } catch (error) {
+        toast(error.message);
+    } finally {
+        button.disabled = false;
+        button.textContent = "Tanyakan";
+    }
+}
+
+function openActivities() {
+    if (!state.material) {
+        toast("Masukkan materi dulu supaya game punya bahan belajar.");
+        showScreen("materi");
+        return;
+    }
+    showScreen("activities");
+}
+
+async function loadGameData() {
+    const saved = localStorage.getItem("rb_game_data");
+    const savedMaterial = localStorage.getItem("rb_game_material");
+
+    if (state.gameData && savedMaterial === state.material) return state.gameData;
+
+    state.gameData = null;
+    if (saved && savedMaterial === state.material) {
+        try {
+            state.gameData = JSON.parse(saved);
+            return state.gameData;
+        } catch (_) {}
+    }
+
+    const data = await api("/api/data-game", { materi: state.material });
+    state.gameData = data;
+    localStorage.setItem("rb_game_data", JSON.stringify(data));
+    localStorage.setItem("rb_game_material", state.material);
+    return data;
+}
+
+async function startGame(type) {
+    showScreen("game");
+    document.getElementById("gameArea").innerHTML = `
+        <div class="loading-card">
+            <div class="loader"></div>
+            <h2>Menyiapkan permainan</h2>
+            <p>Data game sedang dibuat berdasarkan materi kamu.</p>
+        </div>
+    `;
+
+    try {
+        const data = await loadGameData();
+        state.currentGame = type;
+
+        if (type === "memory") renderMemory(data.memory || []);
+        if (type === "puzzle") renderPuzzle(data.puzzle || []);
+    } catch (error) {
+        document.getElementById("gameArea").innerHTML = `
+            <div class="error-card">
+                <h2>Game belum bisa dimulai</h2>
+                <p>${escapeHtml(error.message)}</p>
+                <button class="primary-btn" onclick="startGame('${type}')">Coba Lagi</button>
+            </div>
+        `;
+    }
+}
+
+function renderMemory(pairs) {
+    const source = pairs.slice(0, 6);
+    const cards = [];
+
+    source.forEach((pair, index) => {
+        cards.push({ id: `${index}-a`, pair: index, text: pair.kata });
+        cards.push({ id: `${index}-b`, pair: index, text: pair.pasangan });
+    });
+
+    cards.sort(() => Math.random() - 0.5);
+    state.memory = { cards, open: [], matched: 0 };
+
+    document.getElementById("gameEyebrow").textContent = "MEMORY";
+    document.getElementById("gameTitle").textContent = "Memory Konsep";
+    document.getElementById("gameDescription").textContent = "Buka dua kartu dan cari pasangan konsep yang tepat.";
+
+    drawMemory();
+}
+
+function drawMemory(message = "") {
+    const m = state.memory;
+
+    document.getElementById("gameArea").innerHTML = `
+        <div class="game-panel">
+            <div class="game-status">
+                <span>Pasangan: <strong>${m.matched}/${m.cards.length / 2}</strong></span>
+                <span>Keyboard: 1–9, 0, Q, W</span>
+            </div>
+            <div class="memory-grid">
+                ${m.cards.map((card, index) => {
+                    const visible = m.open.includes(index) || card.matched;
+                    return `
+                        <button class="memory-card ${visible ? "visible" : ""} ${card.matched ? "matched" : ""}"
+                                onclick="flipMemory(${index})">
+                            <span>${visible ? escapeHtml(card.text) : "?"}</span>
+                            <small>${visible ? "" : index + 1}</small>
+                        </button>
+                    `;
+                }).join("")}
+            </div>
+            ${message ? `<div class="feedback">${message}</div>` : ""}
+        </div>
+    `;
+
+    document.removeEventListener("keydown", window._memoryHandler);
+    window._memoryHandler = e => {
+        if (state.currentGame !== "memory") return;
+        const keyMap = {
+            "1": 0, "2": 1, "3": 2, "4": 3, "5": 4,
+            "6": 5, "7": 6, "8": 7, "9": 8, "0": 9,
+            "q": 10, "w": 11
+        };
+        const index = keyMap[e.key.toLowerCase()];
+        if (index !== undefined) flipMemory(index);
+    };
+    document.addEventListener("keydown", window._memoryHandler);
+}
+
+function flipMemory(index) {
+    const m = state.memory;
+    const card = m.cards[index];
+
+    if (!card || card.matched || m.open.includes(index) || m.open.length >= 2) return;
+
+    m.open.push(index);
+    drawMemory();
+
+    if (m.open.length === 2) {
+        const [a, b] = m.open;
+        if (m.cards[a].pair === m.cards[b].pair) {
+            setTimeout(() => {
+                m.cards[a].matched = true;
+                m.cards[b].matched = true;
+                m.open = [];
+                m.matched++;
+                addExp(5);
+
+                if (m.matched === m.cards.length / 2) {
+                    setNumber(STORAGE.games, getNumber(STORAGE.games) + 1);
+                    addExp(20);
+                    drawMemory("🎉 Semua pasangan ditemukan. Hebat!");
+                    toast("+50 EXP karena menyelesaikan Memory.");
+                } else {
+                    drawMemory("Pasangan benar! Lanjutkan.");
+                }
+            }, 500);
+        } else {
+            setTimeout(() => {
+                m.open = [];
+                drawMemory("Pasangan belum tepat. Coba ingat posisi kartunya.");
+            }, 800);
+        }
+    }
+}
+
+function renderPuzzle(items) {
+    state.puzzle = {
+        items: items.slice(0, 3),
+        index: 0,
+        words: [],
+        selected: []
+    };
+
+    document.getElementById("gameEyebrow").textContent = "PUZZLE";
+    document.getElementById("gameTitle").textContent = "Puzzle Kalimat";
+    document.getElementById("gameDescription").textContent = "Susun kata menjadi kalimat penting dari materi.";
+
+    setupPuzzle();
+}
+
+function setupPuzzle() {
+    const p = state.puzzle;
+
+    if (p.index >= p.items.length) {
+        document.getElementById("gameArea").innerHTML = `
+            <div class="success-card">
+                <div class="success-icon">🎉</div>
+                <h2>Semua puzzle selesai!</h2>
+                <p>Kamu berhasil menyusun semua kalimat penting dari materi.</p>
+                <strong>+50 EXP</strong>
+                <button class="primary-btn" onclick="openActivities()">Kembali ke Game</button>
+            </div>
+        `;
+        return;
+    }
+
+    const target = p.items[p.index].kalimat;
+    p.target = target;
+    p.words = target.split(/\s+/).sort(() => Math.random() - 0.5);
+    p.selected = [];
+
+    drawPuzzle();
+}
+
+function drawPuzzle(message = "") {
+    const p = state.puzzle;
+
+    document.getElementById("gameArea").innerHTML = `
+        <div class="game-panel">
+            <div class="game-status">
+                <span>Puzzle <strong>${p.index + 1}/${p.items.length}</strong></span>
+                <span>Susun dari kiri ke kanan</span>
+            </div>
+
+            <div class="puzzle-sentence">
+                ${p.selected.length ? p.selected.map((wordIndex, i) =>
+                    `<button class="selected-word" onclick="removePuzzleWord(${i})">${escapeHtml(p.words[wordIndex])}</button>`
+                ).join("") : `<span class="empty-puzzle">Pilih kata di bawah</span>`}
+            </div>
+
+            <div class="word-bank">
+                ${p.words.map((word, index) => {
+                    const used = p.selected.includes(index);
+                    return `<button class="word-btn ${used ? "used" : ""}" onclick="selectPuzzleWord(${index})">${escapeHtml(word)}</button>`;
+                }).join("")}
+            </div>
+
+            <div class="button-row">
+                <button class="outline-btn" onclick="resetPuzzle()">Ulangi</button>
+                <button class="primary-btn" onclick="checkPuzzle()">Periksa</button>
+            </div>
+
+            ${message ? `<div class="feedback">${message}</div>` : ""}
+        </div>
+    `;
+}
+
+function selectPuzzleWord(index) {
+    const p = state.puzzle;
+    const word = p.words[index];
+
+    if (word === undefined || p.selected.includes(index)) return;
+    p.selected.push(index);
+    drawPuzzle();
+}
+
+function removePuzzleWord(index) {
+    state.puzzle.selected.splice(index, 1);
+    drawPuzzle();
+}
+
+function resetPuzzle() {
+    state.puzzle.selected = [];
+    drawPuzzle();
+}
+
+function checkPuzzle() {
+    const p = state.puzzle;
+    const answer = p.selected.map(index => p.words[index]).join(" ").trim();
+    const target = p.target.trim();
+
+    if (answer.toLowerCase() === target.toLowerCase()) {
+        addExp(10);
+        p.index++;
+        if (p.index >= p.items.length) {
+            setNumber(STORAGE.games, getNumber(STORAGE.games) + 1);
+            addExp(20);
+        }
+        toast("+10 EXP. Jawaban benar!");
+        setupPuzzle();
+    } else {
+        drawPuzzle("Belum tepat. Periksa lagi urutan katanya.");
+    }
+}
+
+async function openExam() {
+    if (!state.material) {
+        toast("Masukkan materi dulu supaya ujian bisa dibuat.");
+        showScreen("materi");
+        return;
+    }
+
+    showScreen("exam");
+    document.getElementById("examArea").innerHTML = `
+        <div class="loading-card">
+            <div class="loader"></div>
+            <h2>Menyiapkan ujian</h2>
+            <p>Soal dibuat berdasarkan materi yang kamu pelajari.</p>
+        </div>
+    `;
+
+    try {
+        if (!state.examData) {
+            const saved = localStorage.getItem("rb_exam_data");
+            const savedMaterial = localStorage.getItem("rb_exam_material");
+
+            if (saved && savedMaterial === state.material) {
+                try { state.examData = JSON.parse(saved); } catch (_) {}
+            }
+
+            if (!state.examData) {
+                state.examData = await api("/api/paket-belajar", { materi: state.material });
+                localStorage.setItem("rb_exam_data", JSON.stringify(state.examData));
+                localStorage.setItem("rb_exam_material", state.material);
+            }
+        }
+
+        renderExam();
+    } catch (error) {
+        document.getElementById("examArea").innerHTML = `
+            <div class="error-card">
+                <h2>Ujian belum bisa dimulai</h2>
+                <p>${escapeHtml(error.message)}</p>
+                <button class="primary-btn" onclick="openExam()">Coba Lagi</button>
+            </div>
+        `;
+    }
+}
+
+function renderExam() {
+    const questions = state.examData.soal || [];
+    const title = state.examData.ringkasan || "Latihan Ujian";
+
+    document.getElementById("examTitle").textContent = "Ujian";
+    state.examRun = {
+        questions,
+        index: 0,
+        score: 0,
+        answered: false
+    };
+
+    drawExam();
+}
+
+function drawExam(feedback = "") {
+    const e = state.examRun;
+    const q = e.questions[e.index];
+
+    if (!q) {
+        finishExam();
+        return;
+    }
+
+    const progress = Math.round((e.index / e.questions.length) * 100);
+
+    document.getElementById("examArea").innerHTML = `
+        <div class="exam-progress">
+            <span>Soal ${e.index + 1} dari ${e.questions.length}</span>
+            <strong>${e.score} benar</strong>
+        </div>
+        <div class="progress-track"><div class="progress-fill" style="width:${progress}%"></div></div>
+
+        <div class="question-card exam-question">
+            <span class="eyebrow">SOAL ${e.index + 1}</span>
+            <h2>${escapeHtml(q.pertanyaan)}</h2>
+            <div class="answer-grid">
+                ${(q.pilihan || []).map((choice, i) =>
+                    `<button class="answer-btn" onclick="answerExam('${String.fromCharCode(65+i)}')">${escapeHtml(choice)}</button>`
+                ).join("")}
+            </div>
+            ${feedback ? `<div class="feedback">${feedback}</div>` : ""}
+        </div>
+
+        <div class="keyboard-hint">Keyboard: tekan <strong>1 2 3 4</strong> untuk memilih jawaban.</div>
+    `;
+
+    document.removeEventListener("keydown", window._examHandler);
+    window._examHandler = eKey => {
+        if (!state.examRun || state.examRun.answered) return;
+        if (["1","2","3","4"].includes(eKey.key)) {
+            answerExam(String.fromCharCode(65 + Number(eKey.key) - 1));
+        }
+    };
+    document.addEventListener("keydown", window._examHandler);
+}
+
+function answerExam(letter) {
+    const e = state.examRun;
+    if (e.answered) return;
+
+    const q = e.questions[e.index];
+    const correct = String(q.jawaban).toUpperCase() === letter.toUpperCase();
+    e.answered = true;
+
+    if (correct) {
+        e.score++;
+        addExp(10);
+        drawExam(`✓ Jawaban benar. ${q.penjelasan || "Konsep sudah kamu pahami."}`);
+    } else {
+        drawExam(`✗ Belum tepat. Jawaban yang benar adalah ${q.jawaban}. ${q.penjelasan || "Pelajari kembali bagian ini."}`);
+    }
+
+    setTimeout(() => {
+        e.index++;
+        e.answered = false;
+        drawExam();
+    }, 2200);
+}
+
+function finishExam() {
+    const e = state.examRun;
+    const total = e.questions.length;
+    const score = total ? Math.round((e.score / total) * 100) : 0;
+
+    setNumber(STORAGE.exams, getNumber(STORAGE.exams) + 1);
+    localStorage.setItem(STORAGE.scores, JSON.stringify({
+        score,
+        correct: e.score,
+        total,
+        date: new Date().toLocaleDateString("id-ID")
+    }));
+
+    addExp(20);
+
+    document.getElementById("examArea").innerHTML = `
+        <div class="result-card">
+            <span class="eyebrow">HASIL UJIAN</span>
+            <div class="score-number">${score}</div>
+            <p>${e.score} dari ${total} soal benar.</p>
+            <div class="result-line"><span>EXP dari ujian</span><strong>+${20 + e.score * 10}</strong></div>
+            <div class="result-line"><span>Catatan</span><strong>${score >= 80 ? "Pemahaman sudah kuat" : "Masih ada bagian yang perlu diulang"}</strong></div>
+            <div class="button-row">
+                <button class="primary-btn" onclick="showScreen('progress'); updateUI()">Lihat Progress</button>
+                <button class="outline-btn" onclick="openExam()">Ulangi Ujian</button>
+            </div>
+        </div>
+    `;
+
+    toast("Ujian selesai. Hasilmu sudah tersimpan.");
+}
+
+function toggleTheme() {
+    const body = document.body;
+    const dark = body.classList.toggle("dark");
+    localStorage.setItem(STORAGE.theme, dark ? "dark" : "light");
+    document.getElementById("themeBtn").textContent = dark ? "☀" : "☾";
+}
+
+function loadTheme() {
+    const dark = localStorage.getItem(STORAGE.theme) === "dark";
+    document.body.classList.toggle("dark", dark);
+    document.getElementById("themeBtn").textContent = dark ? "☀" : "☾";
+}
+
+document.getElementById("materialInput").addEventListener("input", e => {
+    document.getElementById("materialCount").textContent = `${e.target.value.length} karakter`;
+});
+
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/service-worker.js").catch(() => {});
+    });
+}
+
+window.addEventListener("load", () => {
+    loadTheme();
+
+    if (state.material) {
+        document.getElementById("materialInput").value = state.material;
+        document.getElementById("materialCount").textContent = `${state.material.length} karakter`;
+    }
+
+    if (state.explanation) {
+        document.getElementById("explanationText").innerHTML = formatExplanation(state.explanation);
+    }
+
+    updateUI();
+});
+</script>
+</body>
+</html>
